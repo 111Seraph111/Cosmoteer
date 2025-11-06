@@ -1,0 +1,989 @@
+Part : <./Data/ships/terran/base_part_terran.rules>/Part
+{
+	NameKey = "Parts/AYOF"
+	IconNameKey = "Parts/AYOFicon"
+	ID = scanning.AYOF
+	EditorGroup = "Production"
+	DescriptionKey = "Parts/AYOFDesc"
+	Resources
+	[
+		[steel, 80]
+	]
+	Size = [4, 4]
+	IsFlippable = true
+	SelectionPriority = 1
+	MaxHealth = 10000
+	TypeCategories = [provides_iron, provides_carbon,provides_uranium,provides_gold,provides_tritanium,provides_Hyperium,provides_copper,provides_sulfur ,uses_power]
+	ReceivableBuffs : ^/0/ReceivableBuffs [Factory]
+
+	AllowedDoorLocations
+	[
+		[-1, 2]
+		[-1, 3]
+		[0, 4]
+		[1, 4]
+		[2, 4]
+		[3, 4]
+		[4, 3]
+		[4, 2]
+	]
+	EditorIcon
+	{
+		Texture
+		{
+			File = "AYOFicon.png"
+			SampleMode = Linear
+		}
+		Size = [64, 64]
+	}
+	Components : ^/0/Components
+	{
+		IsOperational
+		{
+			Type = MultiToggle
+			Toggles = [PowerToggle, BatteryStorage]
+			Mode = All
+		}
+
+		PowerToggle
+		{
+			Type = UIToggle
+			ToggleID = "on_off"
+			Default = 1
+			RequiresCommand = false
+		}
+
+		CommandConsumer
+		{
+			Type = CommandConsumer
+			OperationalToggle = PowerToggle
+			CommandPoints = 1
+		}
+		ironStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = iron
+			GridRect = [0, 3, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+                sulfurStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = sulfur
+			GridRect = [1, 3, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+                copperStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = copper
+			GridRect = [2, 3, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+                carbonStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = carbon
+			GridRect = [3, 3, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+               uraniumStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = uranium
+			GridRect = [0, 2, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+                goldStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = gold
+			GridRect = [1, 2, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+                tritaniumStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = tritanium
+			GridRect = [2, 2, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+
+                HyperiumStorage
+		{
+			Type = TypedResourceGrid
+			ResourceType = hyperium
+			GridRect = [3, 2, 1, 1]
+			Layer = "doodads_low"
+			SpriteInset = [8/64, 6/64, 2/64, 9/64]
+                        InitToMaxResources = 0
+			RandomSpriteRotation = true
+                        SuppliesResources = true
+                        AllowExternalPickupAndDelivery = true
+		}
+
+		BatteryStorage
+		{
+			Type = ResourceStorage
+			ResourceType = battery
+			MaxResources = 40000
+			ReceiveResourceMediaEffects = &/COMMON_EFFECTS/PowerDeliver
+		}
+		BatteryConsumer
+		{
+			Type = ResourceConsumer
+			ResourceType = battery
+			Storage = BatteryStorage
+			DefaultPriority = &/PRIORITIES/Factory_Supply
+			ResupplyThreshold = 500
+			OperationalToggle = PowerToggle
+		}
+
+		ResourceConverterHP
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage =HyperiumStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsHP
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterHP
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+                ResourceConverterIRON
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage = ironStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsIRON
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterIRON
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+                ResourceConverterS
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage = sulfurStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsS
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterS
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+               ResourceConverterC
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage = copperStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsC
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterC
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+                ResourceConverterT
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage = carbonStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsT
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterT
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+                ResourceConverterU
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage = uraniumStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsU
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterU
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+                ResourceConverterG
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage = goldStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsG
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterG
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+                ResourceConverterTR
+		{
+			Type = ResourceConverter
+			OperationalToggle = IsOperational
+			From
+			[
+			    {
+			        Storage = BatteryStorage
+			        Quantity = 40
+			        MinQuantityForConversion = 1
+			    }
+                        ]
+			ToStorage = tritaniumStorage
+                        ToQuantity = 1
+                        Interval = { BaseValue=1; BuffType=Factory; BuffMode=Divide; }
+                        CheckResourceLimits = true
+                 }
+		ConvertEffectsTR
+		{
+			Type = TriggeredEffects
+			Trigger = ResourceConverterTR
+			Location = [2, 2]
+			MediaEffects
+			[
+				: /BASE_SOUNDS/AudioInterior
+				{
+					Sound = "cannon_ammo_factory_putdown_01.wav"
+					Volume = .1
+					Speed = 1	//default is .5
+					SpeedVariation = .05
+				}
+			]
+		}
+
+		BuffProvider
+		{
+			Type = GridBuffProvider
+			BuffType = Factory
+			BuffAmount = 200%
+			GridDistance = 30
+			OperationalToggle = BatteryStorage
+		}
+
+		FloorSprite
+		{
+			Type = Sprite
+			OnlyWithFlip = false
+			Location = [2, 2]
+			Layer = "floors"
+			DamageLevels
+			[
+				{
+					File = "floor.png"
+					Size = [4, 4]
+				}
+				{
+					File = "floor_33.png"
+					Size = [4, 4]
+				}
+				{
+					File = "floor_66.png"
+					Size = [4, 4]
+				}
+			]
+		}
+
+		FloorSpriteFlipped
+		{
+			Type = Sprite
+			OnlyWithFlip = true
+			Location = [2, 2]
+			Layer = "floors"
+			DamageLevels
+			[
+				{
+					File = "floor_flipped.png"
+					Size = [4, 4]
+				}
+				{
+					File = "floor_flipped_33.png"
+					Size = [4, 4]
+				}
+				{
+					File = "floor_flipped_66.png"
+					Size = [4, 4]
+				}
+			]
+		}
+
+		Graphics
+		{
+			Type = Graphics
+			Location = [2, 2]
+			OperationalToggle = IsOperational
+			DoodadToggle = ResourceConverterIRON
+			ToggleOnDoodad
+			{
+				Layer = "doodads_low"
+				Offset = [0, -.5]
+				DamageLevels
+				[
+					{
+						AnimationFiles
+						[
+							"doodads_on1.png"
+							"doodads_on2.png"
+							"doodads_on3.png"
+							"doodads_on4.png"
+							"doodads_on5.png"
+							"doodads_on6.png"
+							"doodads_on7.png"
+							"doodads_on8.png"
+						]
+						Size = [4, 3]
+						AnimationInterval = 0.125
+					}
+					{
+						AnimationFiles
+						[
+							"doodads_on1_33.png"
+							"doodads_on2_33.png"
+							"doodads_on3_33.png"
+							"doodads_on4_33.png"
+							"doodads_on5_33.png"
+							"doodads_on6_33.png"
+							"doodads_on7_33.png"
+							"doodads_on8_33.png"
+						]
+						Size = [4, 3]
+						AnimationInterval = 0.125
+					}
+					{
+						AnimationFiles
+						[
+							"doodads_on1_66.png"
+							"doodads_on2_66.png"
+							"doodads_on3_66.png"
+							"doodads_on4_66.png"
+							"doodads_on5_66.png"
+							"doodads_on6_66.png"
+							"doodads_on7_66.png"
+							"doodads_on8_66.png"
+						]
+						Size = [4, 3]
+						AnimationInterval = 0.125
+					}
+				]
+			}
+			ToggleOffDoodad
+			{
+				Layer = "doodads_low"
+				Offset = [0, -.5]
+				DamageLevels
+				[
+					{
+						AnimationFiles
+						[
+							"./Data/ships/terran/factory_steel/doodads_idle1.png"
+							"./Data/ships/terran/factory_steel/doodads_idle2.png"
+							"./Data/ships/terran/factory_steel/doodads_idle3.png"
+							"./Data/ships/terran/factory_steel/doodads_idle4.png"
+							"./Data/ships/terran/factory_steel/doodads_idle5.png"
+							"./Data/ships/terran/factory_steel/doodads_idle6.png"
+							"./Data/ships/terran/factory_steel/doodads_idle7.png"
+							"./Data/ships/terran/factory_steel/doodads_idle8.png"
+						]
+						Size = [4, 3]
+						AnimationInterval = 0.125
+						AnimationStartTime = WhenSpawned
+					}
+					{
+						AnimationFiles
+						[
+							"./Data/ships/terran/factory_steel/doodads_idle1_33.png"
+							"./Data/ships/terran/factory_steel/doodads_idle2_33.png"
+							"./Data/ships/terran/factory_steel/doodads_idle3_33.png"
+							"./Data/ships/terran/factory_steel/doodads_idle4_33.png"
+							"./Data/ships/terran/factory_steel/doodads_idle5_33.png"
+							"./Data/ships/terran/factory_steel/doodads_idle6_33.png"
+							"./Data/ships/terran/factory_steel/doodads_idle7_33.png"
+							"./Data/ships/terran/factory_steel/doodads_idle8_33.png"
+						]
+						Size = [4, 3]
+						AnimationInterval = 0.125
+						AnimationStartTime = WhenSpawned
+					}
+					{
+						AnimationFiles
+						[
+							"./Data/ships/terran/factory_steel/doodads_idle1_66.png"
+							"./Data/ships/terran/factory_steel/doodads_idle2_66.png"
+							"./Data/ships/terran/factory_steel/doodads_idle3_66.png"
+							"./Data/ships/terran/factory_steel/doodads_idle4_66.png"
+							"./Data/ships/terran/factory_steel/doodads_idle5_66.png"
+							"./Data/ships/terran/factory_steel/doodads_idle6_66.png"
+							"./Data/ships/terran/factory_steel/doodads_idle7_66.png"
+							"./Data/ships/terran/factory_steel/doodads_idle8_66.png"
+						]
+						Size = [4, 3]
+						AnimationInterval = 0.125
+						AnimationStartTime = WhenSpawned
+					}
+				]
+			}
+			NonOperationalDoodad
+			{
+				Layer = "doodads_low"
+				Offset = [0, -.5]
+				DamageLevels
+				[
+					{
+						File = "./Data/ships/terran/factory_steel/doodads_off.png"
+						Size = [4, 3]
+					}
+					{
+						File = "./Data/ships/terran/factory_steel/doodads_off_33.png"
+						Size = [4, 3]
+					}
+					{
+						File = "./Data/ships/terran/factory_steel/doodads_off_66.png"
+						Size = [4, 3]
+					}
+				]
+			}
+			Walls
+			{
+				Layer = "walls"
+				DamageLevels
+				[
+					{
+						File = "./Data/ships/terran/factory_steel/walls.png"
+						Size = [4, 4]
+					}
+					{
+						File = "./Data/ships/terran/factory_steel/walls_33.png"
+						Size = [4, 4]
+					}
+					{
+						File = "./Data/ships/terran/factory_steel/walls_66.png"
+						Size = [4, 4]
+					}
+				]
+			}
+			OperationalLighting
+			{
+				Layer = "lights_add"
+				DamageLevels
+				[
+					{
+						File = "lights.png"
+						Size = [4, 4]
+					}
+				]
+			}
+			OperationalRoofLighting
+			{
+				Layer = "roof_lights_fancy"
+				Offset = [-62/64, -57/64]
+				DamageLevels
+				[
+					{
+						File = "./Data/ships/common/light_blob.png"
+						Size = [5, 5]
+						Z = .5 // Controls the "height" of the light for the purposes of normal mapping. Set to -1 (or any negative number) to disable normal lighting for this light.
+						VertexColor = [255*1.4, 0, 0]
+					}
+				]
+			}
+		}
+
+		Graphics2
+		{
+			Type = Graphics
+			Location = [2, 2]
+			OperationalToggle = IsOperational
+			OperationalRoofLighting
+			{
+				Layer = "roof_lights_fancy"
+				Offset = [62/64, -57/64]
+				DamageLevels
+				[
+					{
+						File = "./Data/ships/common/light_blob.png"
+						Size = [5, 5]
+						Z = .5 // Controls the "height" of the light for the purposes of normal mapping. Set to -1 (or any negative number) to disable normal lighting for this light.
+						VertexColor = [255*1.4, 0, 0]
+					}
+				]
+			}
+		}
+
+		Graphics3
+		{
+			Type = Graphics
+			OnlyWithFlip = false
+			Location = [1, 1]
+			Walls
+			{
+				Layer = "external_walls"
+				Offset = [32/64, 35/64]
+				DamageLevels
+				[
+					{
+						File = "./Data/resources/iron/overlay.png"
+						Size = [1, 1]
+					}
+				]
+			}
+		}
+
+		Graphics3Flipped
+		{
+			Type = Graphics
+			OnlyWithFlip = true
+			Location = [1, 1]
+			Walls
+			{
+				Layer = "external_walls"
+				Offset = [32/64, 35/64]
+				DamageLevels
+				[
+					{
+						File = "./Data/resources/iron/overlay.png"
+						Size = [1, 1]
+						MirrorU = true
+					}
+				]
+			}
+		}
+
+		RoofDoorOpenToggle
+		{
+			Type = CrewDestinationProximityToggle
+			Distance = 3
+		}
+		RoofDoorSprite
+		{
+			Type = OpenCloseSprite
+			Location = [2, 2]
+			OperationalToggle = RoofDoorOpenToggle
+			Layer = "roofs"
+			OpenDamageLevels
+			[
+				{
+					AnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof1.png"
+						"./Data/ships/terran/factory_steel/roof2.png"
+						"./Data/ships/terran/factory_steel/roof3.png"
+						"./Data/ships/terran/factory_steel/roof4.png"
+						"./Data/ships/terran/factory_steel/roof5.png"
+						"./Data/ships/terran/factory_steel/roof6.png"
+					]
+					NormalsAnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof_normals1.png"
+						"./Data/ships/terran/factory_steel/roof_normals2.png"
+						"./Data/ships/terran/factory_steel/roof_normals3.png"
+						"./Data/ships/terran/factory_steel/roof_normals4.png"
+						"./Data/ships/terran/factory_steel/roof_normals5.png"
+						"./Data/ships/terran/factory_steel/roof_normals6.png"
+					]
+					Size = [4, 4]
+					AnimationInterval = 0.06
+					AnimationStartTime = MinValue
+					ClampAnimation = true
+				}
+				{
+					AnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof1_33.png"
+						"./Data/ships/terran/factory_steel/roof2_33.png"
+						"./Data/ships/terran/factory_steel/roof3_33.png"
+						"./Data/ships/terran/factory_steel/roof4_33.png"
+						"./Data/ships/terran/factory_steel/roof5_33.png"
+						"./Data/ships/terran/factory_steel/roof6_33.png"
+					]
+					NormalsAnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof_normals1_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals2_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals3_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals4_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals5_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals6_33.png"
+					]
+					Size = [4, 4]
+					AnimationInterval = 0.06
+					AnimationStartTime = MinValue
+					ClampAnimation = true
+				}
+				{
+					AnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof1_66.png"
+						"./Data/ships/terran/factory_steel/roof2_66.png"
+						"./Data/ships/terran/factory_steel/roof3_66.png"
+						"./Data/ships/terran/factory_steel/roof4_66.png"
+						"./Data/ships/terran/factory_steel/roof5_66.png"
+						"./Data/ships/terran/factory_steel/roof6_66.png"
+					]
+					NormalsAnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof_normals1_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals2_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals3_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals4_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals5_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals6_66.png"
+					]
+					Size = [4, 4]
+					AnimationInterval = 0.06
+					AnimationStartTime = MinValue
+					ClampAnimation = true
+				}
+			]
+			ClosedDamageLevels
+			[
+				{
+					AnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof6.png"
+						"./Data/ships/terran/factory_steel/roof5.png"
+						"./Data/ships/terran/factory_steel/roof4.png"
+						"./Data/ships/terran/factory_steel/roof3.png"
+						"./Data/ships/terran/factory_steel/roof2.png"
+						"./Data/ships/terran/factory_steel/roof1.png"
+					]
+					NormalsAnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof_normals6.png"
+						"./Data/ships/terran/factory_steel/roof_normals5.png"
+						"./Data/ships/terran/factory_steel/roof_normals4.png"
+						"./Data/ships/terran/factory_steel/roof_normals3.png"
+						"./Data/ships/terran/factory_steel/roof_normals2.png"
+						"./Data/ships/terran/factory_steel/roof_normals1.png"
+					]
+					Size = [4, 4]
+					AnimationInterval = 0.06
+					AnimationStartTime = MinValue
+					ClampAnimation = true
+				}
+				{
+					AnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof6_33.png"
+						"./Data/ships/terran/factory_steel/roof5_33.png"
+						"./Data/ships/terran/factory_steel/roof4_33.png"
+						"./Data/ships/terran/factory_steel/roof3_33.png"
+						"./Data/ships/terran/factory_steel/roof2_33.png"
+						"./Data/ships/terran/factory_steel/roof1_33.png"
+					]
+					NormalsAnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof_normals6_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals5_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals4_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals3_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals2_33.png"
+						"./Data/ships/terran/factory_steel/roof_normals1_33.png"
+					]
+					Size = [4, 4]
+					AnimationInterval = 0.06
+					AnimationStartTime = MinValue
+					ClampAnimation = true
+				}
+				{
+					AnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof6_66.png"
+						"./Data/ships/terran/factory_steel/roof5_66.png"
+						"./Data/ships/terran/factory_steel/roof4_66.png"
+						"./Data/ships/terran/factory_steel/roof3_66.png"
+						"./Data/ships/terran/factory_steel/roof2_66.png"
+						"./Data/ships/terran/factory_steel/roof1_66.png"
+					]
+					NormalsAnimationFiles
+					[
+						"./Data/ships/terran/factory_steel/roof_normals6_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals5_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals4_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals3_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals2_66.png"
+						"./Data/ships/terran/factory_steel/roof_normals1_66.png"
+					]
+					Size = [4, 4]
+					AnimationInterval = 0.06
+					AnimationStartTime = MinValue
+					ClampAnimation = true
+				}
+			]
+		}
+
+		BatterySprites
+		{
+			Type = ResourceSprites
+			Location = [84/64, 92/64]
+			ResourceStorage = BatteryStorage
+			Layer = "doodads_high"
+			ResourceLevels
+			[
+				{
+					File = "batteries1.png"
+					Size = [1, 1]
+				}
+				{
+					File = "batteries2.png"
+					Size = [1, 1]
+				}
+				{
+					File = "batteries3.png"
+					Size = [1, 1]
+				}
+				{
+					File = "batteries4.png"
+					Size = [1, 1]
+				}
+			]
+		}
+
+		OperationEffects
+		{
+			Type = ToggleEffects
+			Location = [2, 2]
+			Toggle = IsOperational
+			ToggledOnMediaEffects = &/COMMON_EFFECTS/MachinesOn
+			ToggledOffMediaEffects = &/COMMON_EFFECTS/MachinesOff
+		}
+
+		DestroyedEffects
+		{
+			Type = DeathEffects
+			MediaEffects = &/COMMON_EFFECTS/HugePartDestroyed
+			Location = [2, 2]
+		}
+
+		Indicators
+		{
+			Type = IndicatorSprites
+			Location = [2, 2]
+			Layer = "indicators"
+			Indicators
+			[
+				// Turned off.
+				{
+					Toggle = PowerToggle
+					AtlasSprite
+					{
+						File = &/INDICATORS/PowerOff
+						Size = [1, 1]
+					}
+				}
+
+				// Out of power.
+				{
+					Toggle = BatteryStorage
+					AtlasSprite
+					{
+						File = &/INDICATORS/NoPower
+						Size = [1, 1]
+					}
+				}
+			]
+		}
+
+		Blueprints
+		{
+			Type = BlueprintSprite
+			OnlyWithFlip = false
+			File = "bluefe.png"
+			Size = [4, 4]
+		}
+
+		BlueprintsFlipped
+		{
+			Type = BlueprintSprite
+			OnlyWithFlip = true
+			File = "bluefe_flipped.png"
+			Size = [4, 4]
+		}
+	}
+}

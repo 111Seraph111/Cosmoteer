@@ -1,0 +1,6 @@
+Parts
+{
+	AYOF= AYOF
+	AYOFDesc = A factory that can create all vanilla minerals (including Hyperium) by consuming only energy 
+        AYOFicon = AYOF
+ }

@@ -1,0 +1,34 @@
+﻿ID = maoyan.mod.ayof
+Name = "AYOF"
+Version = 1.0.1
+CompatibleGameVersions = ["0.29.0"]
+ModifiesMultiplayer = true
+Author = "帽妍"
+// Logo = "logo.png"
+// A longer description of what your mod does to the game. This is optional.
+Description = " 一个理论上能只消耗能量就创造所有原版矿物的机器（包括超光素）"
+StringsFolder = "Strings"
+
+Actions
+[
+	
+	{
+		Action = AddMany
+		AddTo = "<Ships/Terran/terran.rules>/Terran/Parts"
+                // If this is set to true, the 'AddTo' will be created if it doesn't exist.
+		// This is optional and will default to false.
+		CreateIfNotExisting = false
+
+		// If this is set to true, this action will do nothing if the 'AddTo' doesn't exist instead of giving an error.
+		// This is optional and will default to false.
+		IgnoreIfNotExisting = false
+
+
+		ManyToAdd
+		[
+			&<AYOF/AYOF.rules>/Part
+		]
+	}
+
+
+]
